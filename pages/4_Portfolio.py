@@ -1,3 +1,4 @@
 import streamlit as st
-st.title('💼 Portfolio Management')
-st.write('Portfolio tracking coming soon')
+
+st.title("📊 Portfolio Analyzer")
+st.info("Portfolio analysis coming soon...")

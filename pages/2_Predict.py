@@ -1,17 +1,24 @@
 import streamlit as st
-import yfinance as yf
-import numpy as np
-import pandas as pd
-import plotly.graph_objects as go
+from modules.data_loader import load_data
+from modules.predictor import predict_next
+from modules.model_trainer import train_lstm
 
-st.title("🔮 Stock Price Prediction")
+import os
 
-ticker = st.text_input("Enter Stock Symbol", "AAPL")
-data = yf.download(ticker, period="3y")
+st.title("🔮 Stock Prediction")
 
-st.subheader("Historical Price")
-fig = go.Figure()
-fig.add_trace(go.Scatter(x=data.index, y=data['Close'], name="Close Price"))
-st.plotly_chart(fig, use_container_width=True)
+symbol = st.text_input("Enter Stock Symbol", "AAPL")
 
-st.info("Next step: we'll plug LSTM prediction here.")
+if st.button("Train Model"):
+    df = load_data(symbol)
+    train_lstm(df)
+    st.success("Model trained successfully!")
+
+if st.button("Predict Next Day Price"):
+    df = load_data(symbol)
+    predicted = predict_next(df)
+    st.success(f"Predicted Next Close Price: {predicted:.2f}")
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df.index, y=df['Close'], name="Close Price"))
+    st.plotly_chart(fig, use_container_width=True)

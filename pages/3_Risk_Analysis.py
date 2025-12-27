@@ -1,15 +1,14 @@
 import streamlit as st
-import yfinance as yf
-import numpy as np
+from modules.data_loader import load_data
+from modules.risk_analyzer import risk_metrics
 
 st.title("⚠️ Risk Analysis")
 
-ticker = st.text_input("Enter Stock Symbol", "AAPL")
-data = yf.download(ticker, period="3y")
+symbol = st.text_input("Enter Stock Symbol", "AAPL")
 
-returns = data["Close"].pct_change().dropna()
+if st.button("Analyze Risk"):
+    df = load_data(symbol)
+    metrics = risk_metrics(df)
 
-st.write("Volatility:", np.std(returns))
-st.write("Mean Return:", np.mean(returns))
-
-st.success("More risk metrics coming shortly 🔥")
+    st.write(metrics)
+    st.success("Risk Evaluated Successfully!")
